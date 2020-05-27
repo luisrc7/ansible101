@@ -1,0 +1,7 @@
+[ec2]
+54.157.181.242
+
+# Variables for all the servers 
+[ec2:vars]
+ansible_ssh_user=ec2-user
+ansible_ssh_private_key_file=~/.aws/users/Luis/ansible-101.pem
