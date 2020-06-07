@@ -25,3 +25,30 @@ Instead of decrypting the file to be able to edit it, you can use `ansible-vault
 You can also inline encrypt some variables in a file instead the full file, but it looks cleaner to use a separate vars file for all the encrypted variables and others with public vars.
 
 ### Ansible Roles. (chapter 6)
+In order to reduce the number of lines in a playbook and organise the playbooks better by families or related tasks they can be included.
+You can use `- import_tasks: filename` to include a full file.
+Also available `- include_tasks: filename` this way you can have dynamically information in the tasks.
+You can also include a whole playbook with `- import_playbook: filename`.
+This is quite handy to organise the playbook under the different technologies or group of tasks that you have to do, here an example of the simplified playbook:
+```
+---
+- name: Install apache.
+  hosts: all
+  become: true
+
+  handlers:
+    - import_tasks: handlers/apache.yml
+
+  pre_tasks:
+    - name: Load variable files.
+      include_vars: "{{ item }}"
+      with_first_found: 
+        - vars/apache_{{ ansible_os_family }}.yml
+        - vars/apache_default.yml
+
+  tasks:
+    - import_tasks: tasks/apache.yml
+
+- import_playbook: app.yml
+```
+But when there is still complexity Ansible has also the option to organise tasks as roles.
