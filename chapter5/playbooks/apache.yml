@@ -1,0 +1,37 @@
+---
+- name: Install apache.
+  hosts: centos
+  become: true
+
+  handlers: 
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted
+      notify: restart memcached
+
+    - name: restart memcached
+      service: 
+        name: memcached
+        state: restarted
+
+  tasks:
+    - name: Ensure apache is installed.
+      yum: 
+        name: httpd
+        state: present
+
+    - name: Copy test config file.
+      copy:
+        src: files/test.conf
+        dest: /etc/httpd/conf.d/test.conf
+      notify: restart apache
+
+    # - name: Make sure handlers are flushed inmediatly.
+    #   meta: flush_handlers
+
+    - name: Ensure Apache is started and at boot.
+      service: 
+        name: httpd
+        state: started
+        enabled: true
