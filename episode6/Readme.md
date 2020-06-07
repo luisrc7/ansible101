@@ -52,3 +52,31 @@ This is quite handy to organise the playbook under the different technologies or
 - import_playbook: app.yml
 ```
 But when there is still complexity Ansible has also the option to organise tasks as roles.
+To create a role you need a folder called roles, then a subfolder per role, e.g. `nodejs`.
+Then each role needs a `tasks` and `meta` folders, both with a `main.yml` default file.
+The `meta/main.yml` folder will list the dependencies of the rol i depend on other roles.
+Then `tasks/main.yml` will contain the tasks.
+Running the playbook now will display the tasks with the prefix of the role executing the tasks.
+```
+TASK [nodejs : Instal EPEL repo.]
+```
+And you can include your role in your playbook with the notation:
+```
+  roles: 
+    - nodejs
+```
+You can also include the role in between tasks if you need to execute the tasks in certain order like:
+```
+    - name: Copy example Node.js app to server.
+      copy:
+        src: app
+        dest: "{{ node_apps_location }}"
+
+    - include_role: nodejs
+
+    - name: Install app dependencies defined in package.json.
+      npm:
+        path: "{{ node_apps_location }}/app"
+```
+You can use the ansible-galaxy command to create the scaffold structure for the role like `ansible-galaxy role init test` but it creates lots more folders, tahtn the 2 previously discussed as the bare minumum.
+You can use ansible-galaxy to include roles you have contributed to the shared repositoy, or use from other people's public roles.

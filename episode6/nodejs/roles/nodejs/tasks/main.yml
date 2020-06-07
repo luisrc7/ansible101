@@ -1,0 +1,22 @@
+---
+- name: Instal EPEL repo.
+  yum:
+    name: epel-release
+    state: present
+
+- name: Ensure firewalld is disabled.
+  service:
+    name: firewalld
+    state: stopped
+
+- name: Install Node.js and npm.
+  yum:
+    name: npm
+    state: present
+    enablerepo: epel
+
+- name: Install forever.
+  npm:
+    name: forever
+    global: yes
+    state: present
