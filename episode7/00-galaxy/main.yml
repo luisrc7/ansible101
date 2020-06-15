@@ -1,0 +1,13 @@
+---
+# Run with: ansible-paybook main.yml -K
+- hosts: localhost
+  connection: local
+
+  vars:
+    homebrew_installed_packages:
+      - pn
+
+  roles:
+    - elliotweiser.osx-command-line-tools #Comment.
+    - role: geerlingguy.homebrew 
+      become: yes
